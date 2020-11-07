@@ -34,8 +34,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #define USE_SERIAL_PD2
 
-#define TAPPING_FORCE_HOLD
-#define TAPPING_TERM 100
+// when tapping and then holding, it will be interpreted like 
+// a double tap with this active.
+
+// #define TAPPING_FORCE_HOLD
+
+#define TAPPING_TERM 200
 
 #ifdef RGBLIGHT_ENABLE
     #undef RGBLED_NUM
