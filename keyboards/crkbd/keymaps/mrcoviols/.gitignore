@@ -1,0 +1,2 @@
+# Exclude json files, used to port the keymap to the qmk configurator
+*.json
