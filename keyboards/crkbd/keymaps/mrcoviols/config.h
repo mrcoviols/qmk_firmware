@@ -25,14 +25,12 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 /* Select hand configuration */
 
 #define MASTER_LEFT
-// #define MASTER_RIGHT
+//#define MASTER_RIGHT
 // #define EE_HANDS
 
-#ifdef OLED_DRIVER_ENABLE
-  #define SSD1306OLED
-#endif
+//#define SSD1306OLED
 
-#define USE_SERIAL_PD2
+//#define USE_SERIAL_PD2
 
 // when tapping and then holding, it will be interpreted like 
 // a double tap with this active.
