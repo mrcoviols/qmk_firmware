@@ -49,15 +49,15 @@ enum macro_keycodes {
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
   [_QWERTY] = LAYOUT_split_3x6_3( \
-   //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-        KC_TAB,    KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,   KC_P,  KC_BSPC,\
-   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       KC_LCTL,    KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                        KC_H,    KC_J,    KC_K,    KC_L, KC_SCLN, KC_QUOT,\
-   //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-       KC_LSFT, KC_LALT,    KC_Z,    KC_X,    KC_C,    KC_V,                         KC_B,    KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH,\
-   //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                        KC_RALT,   KC_LGUI,  KC_SPC,     KC_ENT,  LOWER,  RAISE \
-                                      //`--------------------------'  `--------------------------'
+   //,------------------------------------------------------------.                    ,-----------------------------------------------------.
+        KC_TAB,           KC_Q,    KC_W,    KC_E,    KC_R,    KC_T,                         KC_Y,    KC_U,    KC_I,    KC_O,   KC_P,  KC_BSPC,\
+   //|--------+---------------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+       KC_LCTL,           KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                         KC_H,    KC_J,    KC_K,    KC_L, KC_SCLN, KC_QUOT,\
+   //|--------+---------------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+       KC_LSFT,  OSM(MOD_LALT),    KC_Z,    KC_X,    KC_C,    KC_V,                         KC_B,    KC_N,    KC_M, KC_COMM,  KC_DOT, KC_SLSH,\
+   //|--------+---------------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
+                                               KC_LGUI,   KC_RALT,  KC_SPC,     KC_ENT,  LOWER,  RAISE \
+                                              //`--------------------------'  `--------------------------'
 
   ),
 
@@ -69,7 +69,7 @@ LCTL_T(KC_ESC),   KC_F1,   KC_F2,   KC_F3,   KC_F4,   KC_F5,                    
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
        KC_LSFT, KC_LALT, XXXXXXX, XXXXXXX, XXXXXXX,  KC_F11,                       KC_F12, KC_LEFT, KC_DOWN,   KC_UP, KC_RGHT, KC_PGDN,\
    //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                        KC_RALT,   KC_LGUI,  KC_SPC,     KC_ENT,  LOWER,  RAISE \
+                                        KC_LGUI,   KC_RALT,  KC_SPC,     KC_ENT,  LOWER,  RAISE \
                                       //`--------------------------'  `--------------------------'
     ),
 
@@ -81,20 +81,20 @@ LCTL_T(KC_ESC), XXXXXXX, XXXXXXX, KC_MINS,  KC_EQL, XXXXXXX,                    
    //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
        KC_LSFT, KC_LALT, XXXXXXX, KC_UNDS, KC_PLUS, XXXXXXX,                      KC_UNDS, KC_PLUS, XXXXXXX, KC_LBRC, KC_RBRC, KC_SLSH,\
    //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                        KC_RALT,   KC_LGUI,  KC_SPC,     KC_ENT,  LOWER,  RAISE \
-                                      //`--------------------------'  `--------------------------'
+                                        KC_LGUI,   KC_RALT,  KC_SPC,      KC_ENT,  LOWER,  RAISE \
+                                       //`--------------------------'  `--------------------------'
   ),
 
    [_ADJUST] = LAYOUT_split_3x6_3( \
-  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      KC_SLEP,KC__MUTE,KC__VOLDOWN,KC__VOLUP, KC_BRID, KC_BRIU,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,\
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LSFT, XXXXXXX, XXXXXXX, KC_MRWD, KC_MPLY, KC_MFFD,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,\
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LCTL,  KC_INS, KC_PSCR, KC_DEL, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX,   KC_PWR, XXXXXXX,   RESET,\
-  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                        KC_LALT,   KC_LGUI,  KC_SPC,     KC_ENT,  LOWER,  RAISE \
-                                      //`--------------------------'  `--------------------------'
+  //,---------------------------------------------------------.                    ,-----------------------------------------------------.
+      XXXXXXX,XXXXXXXX, XXXXXXX,KC__VOLDOWN,KC__VOLUP,KC__MUTE,                      XXXXXXX, XXXXXXX, XXXXXXX,  KC_INS, KC_PSCR,  KC_DEL,\
+  //|--------+--------+-----------+---------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+      KC_CAPS, XXXXXXX,    XXXXXXX,  KC_MRWD, KC_MPLY, KC_MFFD,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,\
+  //|--------+--------+-----------+---------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+      KC_LCTL,  KC_INS,    KC_PSCR,   KC_DEL, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX,  KC_PWR, XXXXXXX,   RESET,\
+  //|--------+--------+-----------+---------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
+                                              KC_LALT, KC_LGUI,  KC_SPC,     KC_ENT,   LOWER,  RAISE \
+                                          //`--------------------------'  `--------------------------'
   )
 };
 
@@ -147,7 +147,7 @@ void matrix_render_user(struct CharacterMatrix *matrix) {
   if (is_master) {
     // If you want to change the display of OLED, you need to change here
     matrix_write_ln(matrix, read_layer_state());
-    matrix_write_ln(matrix, read_keylog());
+    //matrix_write_ln(matrix, read_keylog());
     //matrix_write_ln(matrix, read_keylogs());
     //matrix_write_ln(matrix, read_mode_icon(keymap_config.swap_lalt_lgui));
     //matrix_write_ln(matrix, read_host_led_state());
