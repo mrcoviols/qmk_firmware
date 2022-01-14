@@ -51,7 +51,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_LCTL, KC_LALT, KC_LGUI, KC_LSFT,          KC_NO,            KC_SPC,  KC_RGUI, KC_RALT, KC_RCTL)
 };
 
-bool encoder_update_user(uint8_t index, bool clockwise) {
+void encoder_update_user(uint8_t index, bool clockwise) {
 	switch (get_highest_layer(layer_state)) {
         case _BASE:
              if (clockwise) {
@@ -82,12 +82,11 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
         }
             break;
     }
-    return true;
 }
 
 char wpm[10];
 
-bool oled_task_user(void) {
+void oled_task_user(void) {
     sprintf(wpm, "WPM: %03d", get_current_wpm());
 
     // Host Keyboard Layer Status
@@ -113,5 +112,4 @@ bool oled_task_user(void) {
     }
     oled_write_P(PSTR(" "), false);
     oled_write(wpm, false);
-    return false;
 }

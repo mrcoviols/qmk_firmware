@@ -2,9 +2,8 @@
     "keyboard_name": "Rocketboard-16",
     "url": "",
     "maintainer": "fl3tching101",
-    "layout_aliases": {
-        "LAYOUT_default": "LAYOUT"
-    },
+    "width": 4,
+    "height": 5,
     "layouts": {
         "LAYOUT": {
             "layout": [

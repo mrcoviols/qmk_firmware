@@ -47,15 +47,6 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     )
 };
 
-//Initialize indicator LEDs
-void matrix_init_user(void) {
-  setPinOutput(B5);
-  writePinLow(B5);
-  setPinOutput(B6);
-  writePinLow(B6);
-  setPinOutput(B7);
-  writePinLow(B7);
-}
 
 layer_state_t layer_state_set_user(layer_state_t state) {
     writePinLow(B7);
@@ -80,7 +71,7 @@ bool led_update_user(led_t led_state) {
     return false;
 }
 
-bool encoder_update_user(uint8_t index, bool clockwise) {
+void encoder_update_user(uint8_t index, bool clockwise) {
     if (index == 0) {
         if (clockwise) {
             tap_code(KC_VOLD);
@@ -88,5 +79,4 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
             tap_code(KC_VOLU);
         }
     }
-    return true;
 }

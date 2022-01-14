@@ -1,9 +1,9 @@
 """Clean the QMK firmware folder of build artifacts.
 """
-from subprocess import DEVNULL
-
-from qmk.commands import create_make_target
+from qmk.commands import run
 from milc import cli
+
+import shutil
 
 
 @cli.argument('-a', '--all', arg_only=True, action='store_true', help='Remove *.hex and *.bin files in the QMK root as well.')
@@ -11,4 +11,6 @@ from milc import cli
 def clean(cli):
     """Runs `make clean` (or `make distclean` if --all is passed)
     """
-    cli.run(create_make_target('distclean' if cli.args.all else 'clean'), capture_output=False, stdin=DEVNULL)
+    make_cmd = 'gmake' if shutil.which('gmake') else 'make'
+
+    run([make_cmd, 'distclean' if cli.args.all else 'clean'])

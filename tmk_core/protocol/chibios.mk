@@ -3,10 +3,9 @@ CHIBIOS_DIR = $(PROTOCOL_DIR)/chibios
 
 
 SRC += $(CHIBIOS_DIR)/usb_main.c
-SRC += $(CHIBIOS_DIR)/chibios.c
+SRC += $(CHIBIOS_DIR)/main.c
 SRC += usb_descriptor.c
 SRC += $(CHIBIOS_DIR)/usb_driver.c
-SRC += $(CHIBIOS_DIR)/usb_util.c
 SRC += $(LIBSRC)
 
 VPATH += $(TMK_PATH)/$(PROTOCOL_DIR)

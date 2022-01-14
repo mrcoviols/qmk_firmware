@@ -2,6 +2,8 @@
     "keyboard":"montsinger/rewind",
     "url": "https://montsinger.net",
     "maintainer": "rossman360",
+    "width": 10,
+    "height": 5,
     "layouts": {
         "LAYOUT_ortho_5x10": {
             "layout": [
@@ -63,3 +65,4 @@
         }
     }
 }
+

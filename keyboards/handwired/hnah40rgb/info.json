@@ -2,8 +2,11 @@
     "keyboard_name": "Hnah40", 
     "url": "",
     "maintainer": "HnahKB", 
+    "width": 12, 
+    "height": 4, 
     "layouts": {
         "LAYOUT_all": {
+            "key_count": 42,
             "layout": [
                 {"label":"Esc", "x":0, "y":0}, 
                 {"label":"Q", "x":1, "y":0}, 
@@ -50,6 +53,7 @@
             ]
         },
         "LAYOUT_ansi": {
+            "key_count": 39,
             "layout": [
                 {"label":"Esc", "x":0, "y":0}, 
                 {"label":"Q", "x":1, "y":0}, 

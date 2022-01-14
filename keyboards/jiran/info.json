@@ -2,6 +2,8 @@
     "keyboard_name": "jiran", 
     "url": "t.me/s/ladniys", 
     "maintainer": "Ladniy", 
+    "width": 18.75, 
+    "height": 5.63, 
     "layouts": {
         "LAYOUT": {
             "layout": [

@@ -103,7 +103,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
   return result;
 }
 
-#ifdef OLED_ENABLE
+#ifdef OLED_DRIVER_ENABLE
 
 const char *read_logo(void) {
   static char logo[] = {
@@ -118,7 +118,7 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) {
     return isLeftHand ? OLED_ROTATION_180 : OLED_ROTATION_0;
 }
 
-bool oled_task_user(void) {
+void oled_task_user(void) {
   if (is_keyboard_master()) {
     // Host Keyboard Layer Status
     oled_write_P(PSTR("Layer: "), false);
@@ -142,6 +142,5 @@ bool oled_task_user(void) {
   } else {
     oled_write(read_logo(), false);
   }
-    return false;
 }
 #endif

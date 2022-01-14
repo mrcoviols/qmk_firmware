@@ -1,7 +1,9 @@
 {
-    "keyboard_name": "hannah60rgb rev1",
+    "keyboard_name": "hannah60rgb",
     "url": "",
-    "maintainer": "mechlovin",
+    "maintainer": "Team Mechlovin'",
+    "width": 15,
+    "height": 5,
     "layouts": {
         "LAYOUT_all": {
             "layout": [

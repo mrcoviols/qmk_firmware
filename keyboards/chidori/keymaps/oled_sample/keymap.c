@@ -181,7 +181,7 @@ bool led_update_user(led_t led_state) {
     return false;
 }
 
-#ifdef OLED_ENABLE
+#ifdef OLED_DRIVER_ENABLE
 
 void oled_write_layer_state(void) {
     oled_write_P(PSTR("Layer: "), false);
@@ -210,9 +210,8 @@ void oled_write_layer_state(void) {
     }
 }
 
-bool oled_task_user(void) {
+void oled_task_user(void) {
     // If you want to change the display of OLED, you need to change here
     oled_write_layer_state();
-    return false;
 }
 #endif

@@ -1,4 +1,4 @@
-/* Copyright 2015-2021 Jack Humbert
+/* Copyright 2015-2017 Jack Humbert
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -212,9 +212,6 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
             #ifdef BACKLIGHT_ENABLE
               backlight_step();
             #endif
-            #ifdef RGBLIGHT_ENABLE
-              rgblight_step();
-            #endif
             #ifdef __AVR__
             writePinLow(E6);
             #endif
@@ -236,7 +233,7 @@ uint16_t muse_counter = 0;
 uint8_t muse_offset = 70;
 uint16_t muse_tempo = 50;
 
-bool encoder_update_user(uint8_t index, bool clockwise) {
+void encoder_update_user(uint8_t index, bool clockwise) {
   if (muse_mode) {
     if (IS_LAYER_ON(_RAISE)) {
       if (clockwise) {
@@ -260,10 +257,9 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
       unregister_code(KC_PGUP);
     }
   }
-    return true;
 }
 
-bool dip_switch_update_user(uint8_t index, bool active) {
+void dip_switch_update_user(uint8_t index, bool active) {
     switch (index) {
         case 0:
             if (active) {
@@ -279,7 +275,6 @@ bool dip_switch_update_user(uint8_t index, bool active) {
                 muse_mode = false;
             }
     }
-    return true;
 }
 
 

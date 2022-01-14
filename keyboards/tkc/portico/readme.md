@@ -1,13 +1,14 @@
 # TKC Portico
 
-![TKC Portico](https://raw.githubusercontent.com/noroadsleft/qmk_images/master/keyboards/tkc/portico/portico-clear_overhead_1024x1024.webp)
+![Photo](https://cdn.shopify.com/s/files/1/1679/2319/products/Portico_BoW_1_590x.png?v=1604373859)
 
-A 65% keyboard kit with per-key and underglow RGB lighting.
+A 65% keyboard kit with per-key and underglow RGB lighting
 
 * Keyboard Maintainer: [TerryMathews](https://github.com/TerryMathews)
-* Hardware Supported: TKC Portico (ATmega32U4)
-* Hardware Availability: [TheKey.Company](https://thekey.company/products/portico-keyboard)
+* Hardware Supported: TKC Portico
+* Hardware Availability: TBA
 
+	
 Reset board into bootloader by holding down Esc key while plugging in USB-C cable.
 
 Make example for this keyboard (after setting up your build environment):

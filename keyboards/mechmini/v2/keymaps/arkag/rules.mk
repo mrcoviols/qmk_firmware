@@ -1,4 +1,4 @@
-BOOTMAGIC_ENABLE = yes      # Enable Bootmagic Lite
+BOOTMAGIC_ENABLE = lite
 MOUSEKEY_ENABLE = no
 STENO_ENABLE = no
 EXTRAKEY_ENABLE = yes
@@ -9,6 +9,9 @@ NKRO_ENABLE = yes
 BACKLIGHT_ENABLE = no
 AUDIO_ENABLE = no
 RGBLIGHT_ENABLE = yes
-TAP_DANCE_ENABLE = no
+TAP_DANCE_ENABLE = yes
 UNICODE_ENABLE = yes
 LEADER_ENABLE = yes
+
+# save me space!
+EXTRAFLAGS += -flto

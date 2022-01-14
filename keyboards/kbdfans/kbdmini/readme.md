@@ -1,8 +1,10 @@
 # KBDMINI
 
-* Keyboard Maintainer: [DZTECH](https://github.com/moyi4681)
-* Hardware Supported: KBDMINI
-* Hardware Availability: [KBDFans](https://kbdfans.cn/)
+![KBDMINI](imgur.com image replace me!)
+
+Keyboard Maintainer: [DZTECH](https://github.com/moyi4681)    
+Hardware Supported: KBDMINI   
+Hardware Availability: [KBDFans](https://kbdfans.cn/)  
 
 Make example for this keyboard (after setting up your build environment):
 

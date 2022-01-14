@@ -1,7 +1,9 @@
 {
     "keyboard_name": "Roadster",
     "url": "www.clawboards.xyz",
-    "maintainer": "AlisGraveNil",
+    "maintainer": "AAClawson (AlisGraveNil)",
+    "width": 12,
+    "height": 4,
     "layouts": {
         "LAYOUT": {
             "layout": [
@@ -53,3 +55,4 @@
         }
     }
 }
+

@@ -18,21 +18,17 @@ void keyboard_post_init_user(void) {
 
 ## Debugging Tools
 
-Various tools are available to debug your keyboard.
+There are two different tools you can use to debug your keyboard.
 
 ### Debugging With QMK Toolbox
 
 For compatible platforms, [QMK Toolbox](https://github.com/qmk/qmk_toolbox) can be used to display debug messages from your keyboard.
 
-### Debugging with QMK CLI
-
-Prefer a terminal based solution? The [QMK CLI console command](cli_commands.md#qmk-console) can be used to display debug messages from your keyboard.
-
 ### Debugging With hid_listen
 
-Something stand-alone? [hid_listen](https://www.pjrc.com/teensy/hid_listen.html), provided by PJRC, can also be used to display debug messages. Prebuilt binaries for Windows,Linux,and MacOS are available.
+Prefer a terminal based solution? [hid_listen](https://www.pjrc.com/teensy/hid_listen.html), provided by PJRC, can also be used to display debug messages. Prebuilt binaries for Windows,Linux,and MacOS are available.
 
-## Sending Your Own Debug Messages :id=debug-api
+## Sending Your Own Debug Messages
 
 Sometimes it's useful to print debug messages from within your [custom code](custom_quantum_functions.md). Doing so is pretty simple. Start by including `print.h` at the top of your file:
 
@@ -66,7 +62,7 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 ```
 
 Example output
-```
+```text
 Waiting for device:.......
 Listening:
 KL: kc: 169, col: 0, row: 0, pressed: 1
@@ -86,7 +82,7 @@ When testing performance issues, it can be useful to know the frequency at which
 ```
 
 Example output
-```
+```text
   > matrix scan frequency: 315
   > matrix scan frequency: 313
   > matrix scan frequency: 316

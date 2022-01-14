@@ -137,7 +137,7 @@ uint16_t muse_counter = 0;
 uint8_t muse_offset = 70;
 uint16_t muse_tempo = 50;
 
-bool encoder_update_user(uint8_t index, bool clockwise) {
+void encoder_update(bool clockwise) {
   if (muse_mode) {
     if (IS_LAYER_ON(_RIGHT)) {
       if (clockwise) {
@@ -167,10 +167,9 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
       #endif
     }
   }
-    return true;
 }
 
-bool dip_switch_update_user(uint8_t index, bool active) {
+void dip_switch_update_user(uint8_t index, bool active) {
     switch (index) {
         case 0: {
 #ifdef AUDIO_ENABLE
@@ -199,7 +198,6 @@ bool dip_switch_update_user(uint8_t index, bool active) {
                 muse_mode = false;
             }
     }
-    return true;
 }
 
 void matrix_scan_user(void) {

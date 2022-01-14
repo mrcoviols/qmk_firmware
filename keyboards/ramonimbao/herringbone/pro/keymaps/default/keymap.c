@@ -28,14 +28,14 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 };
 
-#ifdef OLED_ENABLE
+#ifdef OLED_DRIVER_ENABLE
 uint32_t anim_timer = 0;
 uint32_t anim_sleep = 0;
 uint8_t current_frame = 0;
 
 #define FRAME_DURATION 50
 
-bool encoder_update_user(uint8_t index, bool clockwise) {
+void encoder_update_user(uint8_t index, bool clockwise) {
     if (clockwise) {
         tap_code(KC_VOLU);
         anim_sleep = timer_read32();
@@ -45,7 +45,6 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
         anim_sleep = timer_read32();
         oled_on();
     }
-    return true;
 }
 
 static void render_pattern(void) {
@@ -80,7 +79,7 @@ static void render_pattern(void) {
     }
 }
 
-bool oled_task_user(void) {
+void oled_task_user(void) {
     // Render Herringbone pattern
     render_pattern();
     oled_render();
@@ -94,6 +93,5 @@ bool oled_task_user(void) {
     oled_set_cursor(0, 2);
     oled_write_P(led_state.scroll_lock ? PSTR("SCR ") : PSTR("    "), false);
     oled_render();
-    return false;
 }
 #endif

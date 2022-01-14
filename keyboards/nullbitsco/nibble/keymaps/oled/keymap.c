@@ -1,4 +1,4 @@
-/* Copyright 2021 Jay Greco
+/* Copyright 2020 Jay Greco
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -41,7 +41,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
     ),
 };
 
-#ifdef OLED_ENABLE
+#ifdef OLED_DRIVER_ENABLE
 oled_rotation_t oled_init_user(oled_rotation_t rotation) { return OLED_ROTATION_180; }
 
 static void render_logo(void) {
@@ -83,9 +83,8 @@ static void render_logo(void) {
     oled_write_raw_P(nibble_logo, sizeof(nibble_logo));
 }
 
-bool oled_task_user(void) {
+void oled_task_user(void) {
     render_logo();
-    return false;
 }
 #endif
 
@@ -123,13 +122,12 @@ bool process_record_user(uint16_t keycode, keyrecord_t *record) {
 }
 
 
-bool encoder_update_user(uint8_t index, bool clockwise) {
+void encoder_update_user(uint8_t index, bool clockwise) {
     if (clockwise) {
         tap_code(KC_VOLU);
     } else {
         tap_code(KC_VOLD);
     }
-    return true;
 }
 
 void matrix_init_user(void) {

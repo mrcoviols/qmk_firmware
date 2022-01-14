@@ -207,7 +207,7 @@ layer_state_t layer_state_set_user(layer_state_t state) {
     return update_tri_layer_state(state, _NN, _MS, _SP);
 }
 
-#ifdef OLED_ENABLE
+#ifdef OLED_DRIVER_ENABLE
 char wpm_str[10];
 
 // static void render_logo(void) {
@@ -375,7 +375,7 @@ oled_rotation_t oled_init_user(oled_rotation_t rotation) {
     return rotation;
 }
 
-bool oled_task_user(void) {
+void oled_task_user(void) {
     if (is_keyboard_master()) {
         print_status_narrow();
         sprintf(wpm_str, "%03d", get_current_wpm());
@@ -383,12 +383,11 @@ bool oled_task_user(void) {
     } else {
         render_anim();
     }
-    return false;
 }
 #endif
 
 #ifdef ENCODER_ENABLE
-bool encoder_update_user(uint8_t index, bool clockwise) {
+void encoder_update_user(uint8_t index, bool clockwise) {
     if (index == 0) {
         // master side thumb encoder
         // Volume control
@@ -425,6 +424,5 @@ bool encoder_update_user(uint8_t index, bool clockwise) {
             tap_code(KC_HOME);
         }
     }
-    return true;
 }
 #endif

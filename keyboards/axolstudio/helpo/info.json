@@ -2,6 +2,8 @@
     "keyboard_name": "helpo", 
     "url": "", 
     "maintainer": "kb-elmo", 
+    "width": 5, 
+    "height": 4, 
     "layouts": {
         "LAYOUT": {
             "layout": [

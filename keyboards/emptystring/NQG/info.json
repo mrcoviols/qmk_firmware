@@ -2,6 +2,8 @@
     "keyboard_name": "NQG (Not Quite Gherkin)",
     "url": "",
     "maintainer": "culturalsnow",
+    "width": 11,
+    "height": 4,
     "layouts": {
         "LAYOUT": {
             "layout": [

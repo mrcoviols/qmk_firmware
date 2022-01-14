@@ -47,6 +47,5 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.*/
 #define RGBLIGHT_ANIMATIONS             // Run RGB animations
 
 
-#define VIA_HAS_BROKEN_KEYCODES
 
 

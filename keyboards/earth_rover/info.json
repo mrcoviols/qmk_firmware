@@ -2,6 +2,8 @@
     "keyboard_name": "earth_rover",
     "url": "https://github.com/bigwheel/earth_rover",
     "maintainer": "k.bigwheel",
+    "width": 4,
+    "height": 4,
     "layouts": {
         "LAYOUT": {
             "layout": [

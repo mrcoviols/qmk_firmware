@@ -45,19 +45,18 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
         KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS, KC_TRNS),
 };
 
-bool encoder_update_user(uint8_t index, bool clockwise) {
+void encoder_update_user(uint8_t index, bool clockwise) {
     if (index == 0) { /* First encoder */
         if (clockwise) {
             tap_code(KC_VOLU);
         } else {
             tap_code(KC_VOLD);
         }
-    }
-    return true;
+}
 }
 
 
-#ifdef OLED_ENABLE
+#ifdef OLED_DRIVER_ENABLE
 oled_rotation_t oled_init_user(oled_rotation_t rotation) { return OLED_ROTATION_270; }
 
 
@@ -96,7 +95,7 @@ static void render_anim(void) {
         }
     }
 
-bool oled_task_user(void) {
+void oled_task_user(void) {
         render_anim();
         oled_set_cursor(0,6);
         oled_write_P(PSTR("DUCK\nBOARD\n"), false);
@@ -119,7 +118,6 @@ bool oled_task_user(void) {
             oled_write_P(PSTR("FN2\n"), false);
             break;
     }
-    return false;
 }
 #endif
 

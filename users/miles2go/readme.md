@@ -3,7 +3,7 @@
 This is my personal userspace file.  Most of my code exists here, as it's heavily shared.
 
 ## Custom Keycodes
-See the babblepaste.md readme 
+See the babblepaste.txt readme 
 
 ## Layer Indication
 

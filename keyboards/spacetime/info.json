@@ -2,8 +2,11 @@
   "keyboard_name": "spacetime",
   "url": "https://github.com/kyleterry/spacetime-keyboard",
   "maintainer": "qmk",
+  "width": 14,
+  "height": 4,
   "layouts": {
     "LAYOUT": {
+      "key_count": 50,
       "layout": [
           {"label":"L00", "x":0, "y":0},
           {"label":"L01", "x":1, "y":0},
@@ -62,3 +65,4 @@
     }
   }
 }
+  

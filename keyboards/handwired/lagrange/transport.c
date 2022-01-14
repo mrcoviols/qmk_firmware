@@ -18,7 +18,6 @@
 
 #include "quantum.h"
 #include "split_util.h"
-#include "transport.h"
 #include "timer.h"
 
 #include "lagrange.h"
@@ -33,16 +32,15 @@ uint8_t transceive(uint8_t b) {
     return SPDR;
 }
 
-/* The SPI bus, doesn't have any form of protocol built in, so when
+/* The SPI bus, doens't have any form of protocol built in, so when
  * the other side isn't present, any old noise on the line will appear
  * as matrix data.  To avoid interpreting data as keystrokes, we do a
  * simple n-way (8-way here) handshake before each scan, where each
  * side sends a prearranged sequence of bytes. */
 
-bool shake_hands(bool master) {
+void shake_hands(bool master) {
     const uint8_t m = master ? 0xf8 : 0;
     const uint8_t a = 0xa8 ^ m, b = 0x50 ^ m;
-    bool synchronized = true;
 
     uint8_t i;
 
@@ -50,7 +48,7 @@ bool shake_hands(bool master) {
     i = SPDR;
 
     do {
-        /* Cycling the SS pin on each attempt is necessary, as it
+        /* Cylcling the SS pin on each attempt is necessary, as it
          * resets the AVR's SPI core and guarantees proper
          * alignment. */
 
@@ -60,7 +58,6 @@ bool shake_hands(bool master) {
 
         for (i = 0 ; i < 8 ; i += 1) {
             if (transceive(a + i) != b + i) {
-                synchronized = false;
                 break;
             }
         }
@@ -69,11 +66,9 @@ bool shake_hands(bool master) {
             writePinHigh(SPI_SS_PIN);
         }
     } while (i < 8);
-
-    return synchronized;
 }
 
-bool transport_master(matrix_row_t master_matrix[], matrix_row_t slave_matrix[]) {
+bool transport_master(matrix_row_t matrix[]) {
     const struct led_context context = {
         host_keyboard_led_state(),
         layer_state
@@ -81,58 +76,32 @@ bool transport_master(matrix_row_t master_matrix[], matrix_row_t slave_matrix[])
 
     uint8_t i;
 
-    /* We shake hands both before and after transmitting the matrix.
-     * Doing it before transmitting is necessary to ensure
-     * synchronization: Due to the master-slave nature of the SPI bus,
-     * the master calls the shots.  If we just go ahead and start
-     * clocking bits, the slave side might be otherwise engaged at
-     * that moment, so we'll initially read zeros, or garbage.  Then
-     * when the slave gets around to transmitting its matrix, we'll
-     * misinterpret the keys it sends, leading to spurious
-     * keypresses. */
+    /* Shake hands and then receive the matrix from the other side,
+     * while transmitting LED and layer states. */
 
-    /* The handshake forces the master to wait for the slave to be
-     * ready to start transmitting. */
+    shake_hands(true);
 
-    do {
-        shake_hands(true);
+    spi_start(SPI_SS_PIN, 0, 0, 4);
 
-        /* Receive the matrix from the other side, while transmitting
-         * LED and layer states. */
+    for (i = 0 ; i < sizeof(matrix_row_t[MATRIX_ROWS / 2]) ; i += 1) {
+        spi_status_t x;
 
-        spi_start(SPI_SS_PIN, 0, 0, 4);
+        x = spi_write(i < sizeof(struct led_context) ?
+                      ((uint8_t *)&context)[i] : 0);
 
-        for (i = 0 ; i < sizeof(matrix_row_t[MATRIX_ROWS / 2]) ; i += 1) {
-            spi_status_t x;
-
-            x = spi_write(i < sizeof(struct led_context) ?
-                          ((uint8_t *)&context)[i] : 0);
-
-            if (x == SPI_STATUS_TIMEOUT) {
-                return false;
-            }
-
-            ((uint8_t *)slave_matrix)[i] = (uint8_t)x;
+        if (x == SPI_STATUS_TIMEOUT) {
+            return false;
         }
 
-        spi_stop();
+        ((uint8_t *)matrix)[i] = (uint8_t)x;
+    }
 
-        /* In case of errors during the transmission, e.g. if the
-         * cable was disconnected and since there is no inherent
-         * error-checking protocol, we would simply interpret noise as
-         * data. */
-
-        /* To avoid this, both sides shake hands after transmitting.
-         * If synchronization was lost during transmission, the (first)
-         * handshake will fail.  In that case we go around and
-         * re-transmit. */
-
-    } while (!shake_hands(true));
+    spi_stop();
 
     return true;
 }
 
-void transport_slave(matrix_row_t master_matrix[], matrix_row_t slave_matrix[]) {
+void transport_slave(matrix_row_t matrix[]) {
     static struct led_context context;
     struct led_context new_context;
 
@@ -144,17 +113,15 @@ void transport_slave(matrix_row_t master_matrix[], matrix_row_t slave_matrix[]) 
     cli();
     shake_hands(false);
 
-    do {
-        for (i = 0 ; i < sizeof(matrix_row_t[MATRIX_ROWS / 2]) ; i += 1) {
-            uint8_t b;
+    for (i = 0 ; i < sizeof(matrix_row_t[MATRIX_ROWS / 2]) ; i += 1) {
+        uint8_t b;
 
-            b = transceive(((uint8_t *)slave_matrix)[i]);
+        b = transceive(((uint8_t *)matrix)[i]);
 
-            if (i < sizeof(struct led_context)) {
-                ((uint8_t *)&new_context)[i] = b;
-            }
+        if (i < sizeof(struct led_context)) {
+            ((uint8_t *)&new_context)[i] = b;
         }
-    } while (!shake_hands(false));
+    }
 
     sei();
 

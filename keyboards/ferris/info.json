@@ -2,6 +2,8 @@
     "keyboard_name": "Ferris",
     "url": "https://github.com/pierrechevalier83/ferris/",
     "maintainer": "@pierrec83",
+    "width": 12,
+    "height": 4.75,
     "layouts": {
         "LAYOUT": {
             "layout": [

@@ -1,10 +1,5 @@
 # Plaid-Pad
-Rev1.1
-<img src="https://i.imgur.com/Jovhxpr.jpg" width="400" alt="Plaid-Pad Rev1.1">
-Rev3
-<img src="https://i.imgur.com/KHPId3G.jpg" width="400" alt="Plaid-Pad Rev3 with Oled">  
-
-Default Keymap
+<img src="https://i.imgur.com/Jovhxpr.jpg" width="400">
 <img src="https://i.imgur.com/V82cMqq.png" width="400">
 
 A 4x4 numpad/macro pad with only through hole components. It supports up to 4 rotary encoder. The positions for the encoder are interchangeable with keyboard switches.  
@@ -12,7 +7,7 @@ A 4x4 numpad/macro pad with only through hole components. It supports up to 4 ro
 Below you can see the possible positions for the 4 rotary encoder (Rev1 only 2).  
 *If you place a encoder in the top left corner (E1), you can't use another encoder in the lower right corner.*
 ```
-Rev1.1 and higher           Rev1
+Rev1.1                      Rev1
 ,-----------------------,   ,-----------------------,
 |  E1 |  E2 |  E3 |  E4 |   |  E1 |     |     |  E2 |
 |-----+-----+-----+-----|   |-----+-----+-----+-----|
@@ -63,16 +58,10 @@ See the [build environment setup](https://docs.qmk.fm/#/getting_started_build_to
 - Release RESET switch
 - Release BOOT switch
 
-alternative method:
+or an alternative method:
 - Unplug the USB cable
 - Hold down the BOOT switch
 - Plug in the USB cable
 - Release the BOOT switch
 
-alternative method ([Bootmagic Lite](https://docs.qmk.fm/#/feature_bootmagic?id=bootmagic-lite)):
-- Unplug the USB cable
-- Hold down the most top left key
-- Plug in the USB cable
-- Release the most top left key
-
-If you succeed to enter bootloader mode, you can see usbasp in device manager, or `*** USBAsp device connected ...` in [QMK Toolbox](https://github.com/qmk/qmk_toolbox).
+If you succeed to enter bootloader mode, you can see usbasp in device manager, or `*** USBAsp device connected` in [QMK Toolbox](https://github.com/qmk/qmk_toolbox).

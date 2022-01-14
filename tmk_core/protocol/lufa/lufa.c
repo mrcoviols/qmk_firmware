@@ -52,7 +52,6 @@
 #include "usb_descriptor.h"
 #include "lufa.h"
 #include "quantum.h"
-#include "usb_device_state.h"
 #include <util/atomic.h>
 
 #ifdef NKRO_ENABLE
@@ -143,8 +142,9 @@ static void    send_keyboard(report_keyboard_t *report);
 static void    send_mouse(report_mouse_t *report);
 static void    send_system(uint16_t data);
 static void    send_consumer(uint16_t data);
-static void    send_programmable_button(uint32_t data);
-host_driver_t  lufa_driver = {keyboard_leds, send_keyboard, send_mouse, send_system, send_consumer, send_programmable_button};
+host_driver_t  lufa_driver = {
+    keyboard_leds, send_keyboard, send_mouse, send_system, send_consumer,
+};
 
 #ifdef VIRTSER_ENABLE
 // clang-format off
@@ -314,44 +314,45 @@ static void Console_Task(void) {
 void send_joystick_packet(joystick_t *joystick) {
     uint8_t timeout = 255;
 
-    static joystick_report_t r;
-    r = (joystick_report_t) {
+    joystick_report_t r = {
 #    if JOYSTICK_AXES_COUNT > 0
         .axes =
-        { joystick->axes[0],
+            {
+                joystick->axes[0],
 
 #        if JOYSTICK_AXES_COUNT >= 2
-          joystick->axes[1],
+                joystick->axes[1],
 #        endif
 #        if JOYSTICK_AXES_COUNT >= 3
-          joystick->axes[2],
+                joystick->axes[2],
 #        endif
 #        if JOYSTICK_AXES_COUNT >= 4
-          joystick->axes[3],
+                joystick->axes[3],
 #        endif
 #        if JOYSTICK_AXES_COUNT >= 5
-          joystick->axes[4],
+                joystick->axes[4],
 #        endif
 #        if JOYSTICK_AXES_COUNT >= 6
-          joystick->axes[5],
+                joystick->axes[5],
 #        endif
-        },
+            },
 #    endif  // JOYSTICK_AXES_COUNT>0
 
 #    if JOYSTICK_BUTTON_COUNT > 0
-        .buttons = {
-            joystick->buttons[0],
+        .buttons =
+            {
+                joystick->buttons[0],
 
 #        if JOYSTICK_BUTTON_COUNT > 8
-            joystick->buttons[1],
+                joystick->buttons[1],
 #        endif
 #        if JOYSTICK_BUTTON_COUNT > 16
-            joystick->buttons[2],
+                joystick->buttons[2],
 #        endif
 #        if JOYSTICK_BUTTON_COUNT > 24
-            joystick->buttons[3],
+                joystick->buttons[3],
 #        endif
-        }
+            }
 #    endif  // JOYSTICK_BUTTON_COUNT>0
     };
 
@@ -415,10 +416,7 @@ void EVENT_USB_Device_Disconnect(void) {
  *
  * FIXME: Needs doc
  */
-void EVENT_USB_Device_Reset(void) {
-    print("[R]");
-    usb_device_state_set_reset();
-}
+void EVENT_USB_Device_Reset(void) { print("[R]"); }
 
 /** \brief Event USB Device Connect
  *
@@ -426,8 +424,6 @@ void EVENT_USB_Device_Reset(void) {
  */
 void EVENT_USB_Device_Suspend() {
     print("[S]");
-    usb_device_state_set_suspend(USB_Device_ConfigurationNumber != 0, USB_Device_ConfigurationNumber);
-
 #ifdef SLEEP_LED_ENABLE
     sleep_led_enable();
 #endif
@@ -442,8 +438,6 @@ void EVENT_USB_Device_WakeUp() {
 #if defined(NO_USB_STARTUP_CHECK)
     suspend_wakeup_init();
 #endif
-
-    usb_device_state_set_resume(USB_DeviceState == DEVICE_STATE_Configured, USB_Device_ConfigurationNumber);
 
 #ifdef SLEEP_LED_ENABLE
     sleep_led_disable();
@@ -532,13 +526,6 @@ void EVENT_USB_Device_ConfigurationChanged(void) {
     /* Setup joystick endpoint */
     ConfigSuccess &= Endpoint_ConfigureEndpoint((JOYSTICK_IN_EPNUM | ENDPOINT_DIR_IN), EP_TYPE_INTERRUPT, JOYSTICK_EPSIZE, 1);
 #endif
-
-#if defined(DIGITIZER_ENABLE) && !defined(DIGITIZER_SHARED_EP)
-    /* Setup digitizer endpoint */
-    ConfigSuccess &= Endpoint_ConfigureEndpoint((DIGITIZER_IN_EPNUM | ENDPOINT_DIR_IN), EP_TYPE_INTERRUPT, DIGITIZER_EPSIZE, 1);
-#endif
-
-    usb_device_state_set_configuration(USB_DeviceState == DEVICE_STATE_Configured, USB_Device_ConfigurationNumber);
 }
 
 /* FIXME: Expose this table in the docs somehow
@@ -771,32 +758,25 @@ static void send_mouse(report_mouse_t *report) {
 #endif
 }
 
-#if defined(EXTRAKEY_ENABLE) || defined(PROGRAMMABLE_BUTTON_ENABLE)
-static void send_report(void *report, size_t size) {
-    uint8_t timeout = 255;
-
-    if (USB_DeviceState != DEVICE_STATE_Configured) return;
-
-    Endpoint_SelectEndpoint(SHARED_IN_EPNUM);
-
-    /* Check if write ready for a polling interval around 10ms */
-    while (timeout-- && !Endpoint_IsReadWriteAllowed()) _delay_us(40);
-    if (!Endpoint_IsReadWriteAllowed()) return;
-
-    Endpoint_Write_Stream_LE(report, size, NULL);
-    Endpoint_ClearIN();
-}
-#endif
-
 /** \brief Send Extra
  *
  * FIXME: Needs doc
  */
 #ifdef EXTRAKEY_ENABLE
 static void send_extra(uint8_t report_id, uint16_t data) {
-    static report_extra_t r;
-    r = (report_extra_t){.report_id = report_id, .usage = data};
-    send_report(&r, sizeof(r));
+    uint8_t timeout = 255;
+
+    if (USB_DeviceState != DEVICE_STATE_Configured) return;
+
+    report_extra_t r = {.report_id = report_id, .usage = data};
+    Endpoint_SelectEndpoint(SHARED_IN_EPNUM);
+
+    /* Check if write ready for a polling interval around 10ms */
+    while (timeout-- && !Endpoint_IsReadWriteAllowed()) _delay_us(40);
+    if (!Endpoint_IsReadWriteAllowed()) return;
+
+    Endpoint_Write_Stream_LE(&r, sizeof(report_extra_t), NULL);
+    Endpoint_ClearIN();
 }
 #endif
 
@@ -839,14 +819,6 @@ static void send_consumer(uint16_t data) {
 #endif
 }
 
-static void send_programmable_button(uint32_t data) {
-#ifdef PROGRAMMABLE_BUTTON_ENABLE
-    static report_programmable_button_t r;
-    r = (report_programmable_button_t){.report_id = REPORT_ID_PROGRAMMABLE_BUTTON, .usage = data};
-    send_report(&r, sizeof(r));
-#endif
-}
-
 /*******************************************************************************
  * sendchar
  ******************************************************************************/
@@ -857,10 +829,9 @@ static void send_programmable_button(uint32_t data) {
  * FIXME: Needs doc
  */
 int8_t sendchar(uint8_t c) {
-    // Do not wait if the previous write has timed_out.
+    // Not wait once timeouted.
     // Because sendchar() is called so many times, waiting each call causes big lag.
-    // The `timed_out` state is an approximation of the ideal `is_listener_disconnected?` state.
-    static bool timed_out = false;
+    static bool timeouted = false;
 
     // prevents Console_Task() from running during sendchar() runs.
     // or char will be lost. These two function is mutually exclusive.
@@ -874,11 +845,11 @@ int8_t sendchar(uint8_t c) {
         goto ERROR_EXIT;
     }
 
-    if (timed_out && !Endpoint_IsReadWriteAllowed()) {
+    if (timeouted && !Endpoint_IsReadWriteAllowed()) {
         goto ERROR_EXIT;
     }
 
-    timed_out = false;
+    timeouted = false;
 
     uint8_t timeout = SEND_TIMEOUT;
     while (!Endpoint_IsReadWriteAllowed()) {
@@ -889,7 +860,7 @@ int8_t sendchar(uint8_t c) {
             goto ERROR_EXIT;
         }
         if (!(timeout--)) {
-            timed_out = true;
+            timeouted = true;
             goto ERROR_EXIT;
         }
         _delay_ms(1);
@@ -1011,23 +982,6 @@ void virtser_send(const uint8_t byte) {
 }
 #endif
 
-void send_digitizer(report_digitizer_t *report) {
-#ifdef DIGITIZER_ENABLE
-    uint8_t timeout = 255;
-
-    if (USB_DeviceState != DEVICE_STATE_Configured) return;
-
-    Endpoint_SelectEndpoint(DIGITIZER_IN_EPNUM);
-
-    /* Check if write ready for a polling interval around 10ms */
-    while (timeout-- && !Endpoint_IsReadWriteAllowed()) _delay_us(40);
-    if (!Endpoint_IsReadWriteAllowed()) return;
-
-    Endpoint_Write_Stream_LE(report, sizeof(report_digitizer_t), NULL);
-    Endpoint_ClearIN();
-#endif
-}
-
 /*******************************************************************************
  * main
  ******************************************************************************/
@@ -1040,13 +994,8 @@ static void setup_mcu(void) {
     MCUSR &= ~_BV(WDRF);
     wdt_disable();
 
-// For boards running at 3.3V and crystal at 16 MHz
-#if (F_CPU == 8000000 && F_USB == 16000000)
-    /* Divide clock by 2 */
-    clock_prescale_set(clock_div_2);
-#else /* Disable clock division */
+    /* Disable clock division */
     clock_prescale_set(clock_div_1);
-#endif
 }
 
 /** \brief Setup USB
@@ -1063,16 +1012,18 @@ static void setup_usb(void) {
     USB_Device_EnableSOFEvents();
 }
 
-void protocol_setup(void) {
+/** \brief Main
+ *
+ * FIXME: Needs doc
+ */
+int main(void) __attribute__((weak));
+int main(void) {
 #ifdef MIDI_ENABLE
     setup_midi();
 #endif
 
     setup_mcu();
-    usb_device_state_init();
-}
-
-void protocol_pre_init(void) {
+    keyboard_setup();
     setup_usb();
     sei();
 
@@ -1094,57 +1045,70 @@ void protocol_pre_init(void) {
 #else
     USB_USBTask();
 #endif
-}
-
-void protocol_post_init(void) { host_set_driver(&lufa_driver); }
-
-void protocol_pre_task(void) {
-#if !defined(NO_USB_STARTUP_CHECK)
-    if (USB_DeviceState == DEVICE_STATE_Suspended) {
-        print("[s]");
-        while (USB_DeviceState == DEVICE_STATE_Suspended) {
-            suspend_power_down();
-            if (USB_Device_RemoteWakeupEnabled && suspend_wakeup_condition()) {
-                USB_Device_SendRemoteWakeup();
-                clear_keyboard();
-
-#    if USB_SUSPEND_WAKEUP_DELAY > 0
-                // Some hubs, kvm switches, and monitors do
-                // weird things, with USB device state bouncing
-                // around wildly on wakeup, yielding race
-                // conditions that can corrupt the keyboard state.
-                //
-                // Pause for a while to let things settle...
-                wait_ms(USB_SUSPEND_WAKEUP_DELAY);
-#    endif
-            }
-        }
-        suspend_wakeup_init();
-    }
-#endif
-}
-
-void protocol_post_task(void) {
-#ifdef MIDI_ENABLE
-    MIDI_Device_USBTask(&USB_MIDI_Interface);
-#endif
-
-#ifdef MODULE_ADAFRUIT_BLE
-    adafruit_ble_task();
+    /* init modules */
+    keyboard_init();
+    host_set_driver(&lufa_driver);
+#ifdef SLEEP_LED_ENABLE
+    sleep_led_init();
 #endif
 
 #ifdef VIRTSER_ENABLE
-    virtser_task();
-    CDC_Device_USBTask(&cdc_device);
+    virtser_init();
+#endif
+
+    print("Keyboard start.\n");
+    while (1) {
+#if !defined(NO_USB_STARTUP_CHECK)
+        if (USB_DeviceState == DEVICE_STATE_Suspended) {
+            print("[s]");
+            while (USB_DeviceState == DEVICE_STATE_Suspended) {
+                suspend_power_down();
+                if (USB_Device_RemoteWakeupEnabled && suspend_wakeup_condition()) {
+                    USB_Device_SendRemoteWakeup();
+                    clear_keyboard();
+
+#    if USB_SUSPEND_WAKEUP_DELAY > 0
+                    // Some hubs, kvm switches, and monitors do
+                    // weird things, with USB device state bouncing
+                    // around wildly on wakeup, yielding race
+                    // conditions that can corrupt the keyboard state.
+                    //
+                    // Pause for a while to let things settle...
+                    wait_ms(USB_SUSPEND_WAKEUP_DELAY);
+#    endif
+                }
+            }
+            suspend_wakeup_init();
+        }
+#endif
+
+        keyboard_task();
+
+#ifdef MIDI_ENABLE
+        MIDI_Device_USBTask(&USB_MIDI_Interface);
+#endif
+
+#ifdef MODULE_ADAFRUIT_BLE
+        adafruit_ble_task();
+#endif
+
+#ifdef VIRTSER_ENABLE
+        virtser_task();
+        CDC_Device_USBTask(&cdc_device);
 #endif
 
 #ifdef RAW_ENABLE
-    raw_hid_task();
+        raw_hid_task();
 #endif
 
 #if !defined(INTERRUPT_CONTROL_ENDPOINT)
-    USB_USBTask();
+        USB_USBTask();
 #endif
+
+        // Run housekeeping
+        housekeeping_task_kb();
+        housekeeping_task_user();
+    }
 }
 
 uint16_t CALLBACK_USB_GetDescriptor(const uint16_t wValue, const uint16_t wIndex, const void **const DescriptorAddress) { return get_usb_descriptor(wValue, wIndex, DescriptorAddress); }

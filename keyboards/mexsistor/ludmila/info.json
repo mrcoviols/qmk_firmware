@@ -2,6 +2,8 @@
     "keyboard_name": "ludmila",
     "url": "",
     "maintainer": "Kevin M.",
+    "width": 4,
+    "height": 2,
     "layouts": {
         "LAYOUT": {
             "layout": [

@@ -13,7 +13,7 @@ Make example for this keyboard (after setting up your build environment):
 
 Example of flashing this keyboard:
 
-    make keebio/quefrency/rev3:default:flash
+    make keebio/quefrency/rev3:default:avrdude
 
 Handedness detection is already hardwired onto the PCB, so no need to deal with `EE_HANDS` or flashing .eep files.
 

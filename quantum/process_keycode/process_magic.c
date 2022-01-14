@@ -43,7 +43,6 @@ bool process_magic(uint16_t keycode, keyrecord_t *record) {
         switch (keycode) {
             case MAGIC_SWAP_CONTROL_CAPSLOCK ... MAGIC_TOGGLE_ALT_GUI:
             case MAGIC_SWAP_LCTL_LGUI ... MAGIC_EE_HANDS_RIGHT:
-            case MAGIC_TOGGLE_GUI:
                 /* keymap config */
                 keymap_config.raw = eeconfig_read_keymap();
                 switch (keycode) {
@@ -164,9 +163,6 @@ bool process_magic(uint16_t keycode, keyrecord_t *record) {
                         break;
                     case MAGIC_EE_HANDS_RIGHT:
                         eeconfig_update_handedness(false);
-                        break;
-                    case MAGIC_TOGGLE_GUI:
-                        keymap_config.no_gui = !keymap_config.no_gui;
                         break;
                 }
 

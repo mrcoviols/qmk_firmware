@@ -1,6 +1,3 @@
-// Copyright 2022 Soundmonster (@soundmonster)
-// SPDX-License-Identifier: GPL-2.0-or-later
-
 #include QMK_KEYBOARD_H
 
 extern keymap_config_t keymap_config;
@@ -9,6 +6,12 @@ extern keymap_config_t keymap_config;
 //Following line allows macro to read current RGB settings
 extern rgblight_config_t rgblight_config;
 #endif
+
+#ifdef OLED_DRIVER_ENABLE
+static uint32_t oled_timer = 0;
+#endif
+
+extern uint8_t is_master;
 
 // Each layer gets a name for readability, which is then used in the keymap matrix below.
 // The underscores don't mean anything - you can have a layer called STUFF or any other name.
@@ -35,7 +38,7 @@ enum custom_keycodes {
 };
 
 const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
-  [_QWERTY] = LAYOUT_split_3x6_3(
+  [_QWERTY] = LAYOUT(
   //,-----------------------------------------.                ,---------------------------------------------.
      KC_TAB,  KC_Q,  KC_W,  KC_E,  KC_R,  KC_T,                   KC_Y,  KC_U,  KC_I,  KC_O,  KC_P,  KC_BSPC,
   //|------+------+------+------+------+------|                |------+------+-------+------+-------+--------|
@@ -47,7 +50,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                               //`--------------------'  `--------------------'
   ),
 
-  [_LOWER] = LAYOUT_split_3x6_3(
+  [_LOWER] = LAYOUT(
   //,---------------------------------------------.                ,-----------------------------------------.
      KC_ESC,  KC_1, KC_2,   KC_3,   KC_4,   KC_5,                    KC_6,  KC_7,  KC_8,  KC_9,  KC_0, KC_DEL,
   //|------+------+-------+-------+-------+-------|                |------+------+------+------+------+------|
@@ -59,7 +62,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                                   //`--------------------'  `--------------------'
   ),
 
-  [_RAISE] = LAYOUT_split_3x6_3(
+  [_RAISE] = LAYOUT(
   //,-----------------------------------------.                ,-----------------------------------------.
      KC_ESC,KC_EXLM,KC_AT,KC_HASH,KC_DLR,KC_PERC,              KC_CIRC,KC_AMPR,KC_ASTR,KC_LPRN,KC_RPRN,KC_BSPC,
   //|------+------+------+------+------+------|                |------+------+------+------+------+------|
@@ -71,7 +74,7 @@ const uint16_t PROGMEM keymaps[][MATRIX_ROWS][MATRIX_COLS] = {
                               //`--------------------'  `--------------------'
   ),
 
-  [_ADJUST] = LAYOUT_split_3x6_3(
+  [_ADJUST] = LAYOUT(
   //,-----------------------------------------.                ,-----------------------------------------.
       RESET,RGBRST, KC_NO, KC_NO, KC_NO, KC_NO,                  KC_NO,KC__MUTE, KC_NO, KC_NO, KC_NO, KC_NO,
   //|------+------+------+------+------+------|                |------+------+------+------+------+------|
@@ -101,7 +104,7 @@ void matrix_init_user(void) {
     #endif
 }
 
-#ifdef OLED_ENABLE
+#ifdef OLED_DRIVER_ENABLE
 oled_rotation_t oled_init_user(oled_rotation_t rotation) { return OLED_ROTATION_270; }
 
 void render_space(void) {
@@ -277,19 +280,48 @@ void render_layer_state(void) {
     }
 }
 
-bool oled_task_user(void) {
-    // Renders the current keyboard state (layers and mods)
+void render_status_main(void) {
     render_logo();
     render_space();
     render_layer_state();
     render_space();
     render_mod_status_gui_alt(get_mods()|get_oneshot_mods());
     render_mod_status_ctrl_shift(get_mods()|get_oneshot_mods());
-    return false;
+}
+
+void render_status_secondary(void) {
+    render_logo();
+    render_space();
+    render_layer_state();
+    render_space();
+    render_mod_status_gui_alt(get_mods()|get_oneshot_mods());
+    render_mod_status_ctrl_shift(get_mods()|get_oneshot_mods());
+}
+
+void oled_task_user(void) {
+    if (timer_elapsed32(oled_timer) > 30000) {
+        oled_off();
+        return;
+    }
+#ifndef SPLIT_KEYBOARD
+    else { oled_on(); }
+#endif
+
+    if (is_master) {
+        render_status_main();  // Renders the current keyboard state (layer, lock, caps, scroll, etc)
+    } else {
+        render_status_secondary();
+    }
 }
 
 #endif
 bool process_record_user(uint16_t keycode, keyrecord_t *record) {
+  if (record->event.pressed) {
+#ifdef OLED_DRIVER_ENABLE
+        oled_timer = timer_read32();
+#endif
+    // set_timelog();
+  }
   static uint16_t my_colon_timer;
 
   switch (keycode) {

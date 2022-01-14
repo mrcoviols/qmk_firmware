@@ -2,7 +2,6 @@
 """
 import json
 
-from argcomplete.completers import FilesCompleter
 from milc import cli
 
 import qmk.keymap
@@ -11,7 +10,7 @@ import qmk.path
 
 @cli.argument('-o', '--output', arg_only=True, type=qmk.path.normpath, help='File to write to')
 @cli.argument('-q', '--quiet', arg_only=True, action='store_true', help="Quiet mode, only output error messages")
-@cli.argument('filename', type=qmk.path.FileType('r'), arg_only=True, completer=FilesCompleter('.json'), help='Configurator JSON file')
+@cli.argument('filename', type=qmk.path.FileType('r'), arg_only=True, help='Configurator JSON file')
 @cli.subcommand('Creates a keymap.c from a QMK Configurator export.')
 def json2c(cli):
     """Generate a keymap.c from a configurator export.
@@ -33,7 +32,7 @@ def json2c(cli):
         cli.args.output = None
 
     # Generate the keymap
-    keymap_c = qmk.keymap.generate_c(user_keymap)
+    keymap_c = qmk.keymap.generate_c(user_keymap['keyboard'], user_keymap['layout'], user_keymap['layers'])
 
     if cli.args.output:
         cli.args.output.parent.mkdir(parents=True, exist_ok=True)

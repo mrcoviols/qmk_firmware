@@ -2,6 +2,8 @@
     "keyboard_name": "Vega",
     "url": "ai03.com",
     "maintainer": "ai03",
+    "width": 16,
+    "height": 5,
     "layouts": {
         "LAYOUT_all": {
             "layout": [

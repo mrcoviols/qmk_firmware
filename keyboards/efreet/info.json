@@ -2,6 +2,8 @@
     "keyboard_name": "efreet",
     "url": "",
     "maintainer": "amberstarlight",
+    "width": 12,
+    "height": 4,
     "layouts": {
         "LAYOUT_planck_mit": {
             "layout": [

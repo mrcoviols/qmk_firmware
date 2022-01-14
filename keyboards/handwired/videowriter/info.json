@@ -2,6 +2,8 @@
     "keyboard_name": "videowriter",
     "url": "https://deskthority.net/viewtopic.php?f=7&t=20210",
     "maintainer": "DmNosachev",
+    "width": 16,
+    "height": 7.5,
     "layouts": {
         "LAYOUT": {
             "layout": [

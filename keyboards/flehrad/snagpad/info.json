@@ -2,6 +2,9 @@
     "keyboard_name": "Snagpad",
     "url": "",
     "maintainer": "Flehrad",
+
+    "width": 4,
+    "height": 5,
     "layouts": {
 
         "LAYOUT_ortho_5x4": {

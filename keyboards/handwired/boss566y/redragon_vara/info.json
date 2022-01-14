@@ -2,6 +2,8 @@
     "keyboard_name": "Handwired Redragon Vara",
     "url": "",
     "maintainer": "qmk",
+    "width": 22.5,
+    "height": 6.5,
     "layouts": {
         "LAYOUT_fullsize_ansi": {
             "layout": [
@@ -112,4 +114,5 @@
             ]
         }
     }
+    ,"meta": "https://noroadsleft.github.io/kbf_qmk_converter/"
 }

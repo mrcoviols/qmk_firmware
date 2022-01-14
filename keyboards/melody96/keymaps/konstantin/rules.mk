@@ -1,5 +1,5 @@
 # Generic features
-BOOTMAGIC_ENABLE = yes      # Enable Bootmagic Lite
+BOOTMAGIC_ENABLE   = no
 COMMAND_ENABLE     = yes
 CONSOLE_ENABLE     = yes
 EXTRAKEY_ENABLE    = yes
@@ -11,7 +11,6 @@ UNICODEMAP_ENABLE  = yes
 # Keyboard-specific features
 BACKLIGHT_ENABLE   = no
 RGBLIGHT_ENABLE    = yes
-VIA_ENABLE         = yes
 
 # Firmware size reduction
 GRAVE_ESC_ENABLE   = no

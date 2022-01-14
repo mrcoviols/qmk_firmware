@@ -4,9 +4,9 @@
 
 Split ergonomics meets productivity. Breeze Rev1 is a split keyboard with 6×4 keys, 4 key thumb cluster, arrow keys, and a 6 key macro cluster, with ortholinear column-staggered.
 
-* Keyboard Maintainer: [AfternoonLabs](https://github.com/afternoonlabs)
+* Keyboard Maintainer: [Eithan Shavit](https://github.com/eithanshavit)
 * Hardware Supported: Breeze Rev1 PCB
-* Hardware Availability: [store.afternoonlab.com](https://store.afternoonlabs.com)
+* Hardware Availability: Coming soon
 
 Make example for this keyboard (after setting up your build environment):
 

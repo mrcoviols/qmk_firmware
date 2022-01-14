@@ -1,23 +1,26 @@
 # Meira
 
-![Meira](https://i.imgur.com/kF4MFlWh.jpeg)
+![Miera](https://imgur.com/kF4MFlW)
 
 A 4x12 ortholinear low-profile keyboard.
 
-* Keyboard Maintainer: [Cole Markham](https://github.com/colemarkham)
-* Hardware Supported: Meira/ProMicro, Meira/FeatherBLE
-* Hardware Availability: [WoodKeys.click](https://woodkeys.click/meira)
+Keyboard Maintainer: [Cole Markham](https://github.com/colemarkham)  
+Hardware Supported: Meira/ProMicro, Meira/FeatherBLE  
+Hardware Availability: [WoodKeys.click](https://woodkeys.click/meira)  
 
-Two controllers are supported: the Pro Micro, and the Adafruit Feather BLE 32u4. Support for each is defined as a hardware revision subfolder in QMK. Main differences include processor frequencies and matrix pinouts.
+Two controllers are support: the Pro Micro, and the Adafruit Feather BLE 32u4. Support for each is defined as a hardware revision subfolder in QMK. Main differences include processor frequencies and matrix pinouts.
 
-Make examples for this keyboard (after setting up your build environment):
+Make example for this keyboard (after setting up your build environment):
 
-    make meira/featherble:default  # for Feather BLE 32u4 controllers
-    make meira/promicro:default    # for Pro Micro controllers
+    make meira/promicro:default
 
-See the [build environment setup](https://docs.qmk.fm/#/getting_started_build_tools) and the [make instructions](https://docs.qmk.fm/#/getting_started_make_guide) for more information. Brand new to QMK? Start with our [Complete Newbs Guide](https://docs.qmk.fm/#/newbs).
+or
 
-Both the Pro Micro and the Feather BLE use the Caterina bootloader, which is typically programmed using avrdude.
+    make meira/featherble:default
+
+See [build environment setup](https://docs.qmk.fm/#/getting_started_build_tools) then the [make instructions](https://docs.qmk.fm/#/getting_started_make_guide) for more information on generic QMK configuration and setup.
+
+Both the Pro Micro and the Feather BLE use the Catalina bootloader, which is typically programmed using avrdude.
 
 ## Matrix
 

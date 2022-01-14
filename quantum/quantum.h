@@ -15,20 +15,33 @@
  */
 #pragma once
 
-#include "platform_deps.h"
+#if defined(__AVR__)
+#    include <avr/pgmspace.h>
+#    include <avr/io.h>
+#    include <avr/interrupt.h>
+#endif
+#if defined(PROTOCOL_CHIBIOS)
+#    include <hal.h>
+#    include "chibios_config.h"
+#endif
+
 #include "wait.h"
 #include "matrix.h"
 #include "keymap.h"
 
 #ifdef BACKLIGHT_ENABLE
-#    include "backlight.h"
-#endif
-
-#ifdef LED_MATRIX_ENABLE
-#    include "led_matrix.h"
+#    ifdef LED_MATRIX_ENABLE
+#        include "led_matrix.h"
+#    else
+#        include "backlight.h"
+#    endif
 #endif
 
 #if defined(RGBLIGHT_ENABLE)
+#    include "rgblight.h"
+#elif defined(RGB_MATRIX_ENABLE)
+// Dummy define RGBLIGHT_MODE_xxxx
+#    define RGBLIGHT_H_DUMMY_DEFINE
 #    include "rgblight.h"
 #endif
 
@@ -39,7 +52,6 @@
 #include "action_layer.h"
 #include "eeconfig.h"
 #include "bootloader.h"
-#include "bootmagic.h"
 #include "timer.h"
 #include "sync_timer.h"
 #include "config_common.h"
@@ -53,10 +65,6 @@
 #include "suspend.h"
 #include <stddef.h>
 #include <stdlib.h>
-
-#ifdef DEFERRED_EXEC_ENABLE
-#    include "deferred_exec.h"
-#endif
 
 extern layer_state_t default_layer_state;
 
@@ -89,7 +97,7 @@ extern layer_state_t layer_state;
 #    include "process_music.h"
 #endif
 
-#if defined(BACKLIGHT_ENABLE) || defined(LED_MATRIX_ENABLE)
+#ifdef BACKLIGHT_ENABLE
 #    include "process_backlight.h"
 #endif
 
@@ -109,10 +117,6 @@ extern layer_state_t layer_state;
 #    include "process_unicodemap.h"
 #endif
 
-#ifdef KEY_OVERRIDE_ENABLE
-#    include "process_key_override.h"
-#endif
-
 #ifdef TAP_DANCE_ENABLE
 #    include "process_tap_dance.h"
 #endif
@@ -123,10 +127,6 @@ extern layer_state_t layer_state;
 
 #ifdef AUTO_SHIFT_ENABLE
 #    include "process_auto_shift.h"
-#endif
-
-#ifdef DYNAMIC_TAPPING_TERM_ENABLE
-#    include "process_dynamic_tapping_term.h"
 #endif
 
 #ifdef COMBO_ENABLE
@@ -155,10 +155,6 @@ extern layer_state_t layer_state;
 #    include "process_joystick.h"
 #endif
 
-#ifdef PROGRAMMABLE_BUTTON_ENABLE
-#    include "process_programmable_button.h"
-#endif
-
 #ifdef GRAVE_ESC_ENABLE
 #    include "process_grave_esc.h"
 #endif
@@ -173,15 +169,10 @@ extern layer_state_t layer_state;
 
 #ifdef HAPTIC_ENABLE
 #    include "haptic.h"
-#    include "process_haptic.h"
 #endif
 
-#ifdef OLED_ENABLE
+#ifdef OLED_DRIVER_ENABLE
 #    include "oled_driver.h"
-#endif
-
-#ifdef ST7565_ENABLE
-#    include "st7565.h"
 #endif
 
 #ifdef DIP_SWITCH_ENABLE
@@ -208,12 +199,37 @@ extern layer_state_t layer_state;
 #    include "usbpd.h"
 #endif
 
-#ifdef ENCODER_ENABLE
-#    include "encoder.h"
-#endif
+// Function substitutions to ease GPIO manipulation
+#if defined(__AVR__)
 
-#ifdef POINTING_DEVICE_ENABLE
-#    include "pointing_device.h"
+/*   The AVR series GPIOs have a one clock read delay for changes in the digital input signal.
+ *   But here's more margin to make it two clocks. */
+#    if !defined(GPIO_INPUT_PIN_DELAY)
+#        define GPIO_INPUT_PIN_DELAY 2
+#    endif
+#    define waitInputPinDelay() wait_cpuclock(GPIO_INPUT_PIN_DELAY)
+
+#elif defined(__ARMEL__) || defined(__ARMEB__)
+
+/* For GPIOs on ARM-based MCUs, the input pins are sampled by the clock of the bus
+ * to which the GPIO is connected.
+ * The connected buses differ depending on the various series of MCUs.
+ * And since the instruction execution clock of the CPU and the bus clock of GPIO are different,
+ * there is a delay of several clocks to read the change of the input signal.
+ *
+ * Define this delay with the GPIO_INPUT_PIN_DELAY macro.
+ * If the GPIO_INPUT_PIN_DELAY macro is not defined, the following default values will be used.
+ * (A fairly large value of 0.25 microseconds is set.)
+ */
+#    if !defined(GPIO_INPUT_PIN_DELAY)
+#        if defined(STM32_SYSCLK)
+#            define GPIO_INPUT_PIN_DELAY (STM32_SYSCLK / 1000000L / 4)
+#        elif defined(KINETIS_SYSCLK_FREQUENCY)
+#            define GPIO_INPUT_PIN_DELAY (KINETIS_SYSCLK_FREQUENCY / 1000000L / 4)
+#        endif
+#    endif
+#    define waitInputPinDelay() wait_cpuclock(GPIO_INPUT_PIN_DELAY)
+
 #endif
 
 // For tri-layer
@@ -222,12 +238,18 @@ layer_state_t update_tri_layer_state(layer_state_t state, uint8_t layer1, uint8_
 
 void set_single_persistent_default_layer(uint8_t default_layer);
 
+void tap_random_base64(void);
+
 #define IS_LAYER_ON(layer) layer_state_is(layer)
 #define IS_LAYER_OFF(layer) !layer_state_is(layer)
 
 #define IS_LAYER_ON_STATE(state, layer) layer_state_cmp(state, layer)
 #define IS_LAYER_OFF_STATE(state, layer) !layer_state_cmp(state, layer)
 
+void     matrix_init_kb(void);
+void     matrix_scan_kb(void);
+void     matrix_init_user(void);
+void     matrix_scan_user(void);
 uint16_t get_record_keycode(keyrecord_t *record, bool update_layer_cache);
 uint16_t get_event_keycode(keyevent_t event, bool update_layer_cache);
 bool     process_action_kb(keyrecord_t *record);
@@ -235,6 +257,15 @@ bool     process_record_kb(uint16_t keycode, keyrecord_t *record);
 bool     process_record_user(uint16_t keycode, keyrecord_t *record);
 void     post_process_record_kb(uint16_t keycode, keyrecord_t *record);
 void     post_process_record_user(uint16_t keycode, keyrecord_t *record);
+
+#ifndef BOOTMAGIC_LITE_COLUMN
+#    define BOOTMAGIC_LITE_COLUMN 0
+#endif
+#ifndef BOOTMAGIC_LITE_ROW
+#    define BOOTMAGIC_LITE_ROW 0
+#endif
+
+void bootmagic_lite(void);
 
 void reset_keyboard(void);
 
@@ -245,11 +276,15 @@ void register_code16(uint16_t code);
 void unregister_code16(uint16_t code);
 void tap_code16(uint16_t code);
 
+void     send_dword(uint32_t number);
+void     send_word(uint16_t number);
+void     send_byte(uint8_t number);
+void     send_nibble(uint8_t number);
+uint16_t hex_to_keycode(uint8_t hex);
+
 void led_set_user(uint8_t usb_led);
 void led_set_kb(uint8_t usb_led);
 bool led_update_user(led_t led_state);
 bool led_update_kb(led_t led_state);
 
-const char *get_numeric_str(char *buf, size_t buf_len, uint32_t curr_num, char curr_pad);
-const char *get_u8_str(uint8_t curr_num, char curr_pad);
-const char *get_u16_str(uint16_t curr_num, char curr_pad);
+void api_send_unicode(uint32_t unicode);
