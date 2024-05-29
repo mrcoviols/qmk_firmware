@@ -1,5 +1,4 @@
-/*
-Copyright 2019 @foostan
+/* Copyright 2019 @foostan
 Copyright 2020 Drashna Jaelre <@drashna>
 
 This program is free software: you can redistribute it and/or modify
@@ -59,7 +58,6 @@ LCTL_T(KC_ESC),    KC_A,    KC_S,    KC_D,    KC_F,    KC_G,                    
    //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
                                         KC_LALT,   KC_LGUI,  KC_SPC,     KC_ENT,  LOWER,  RAISE \
                                       //`--------------------------'  `--------------------------'
-
   ),
 
    [_LOWER] = LAYOUT_split_3x6_3( \
@@ -87,15 +85,15 @@ LCTL_T(KC_ESC), XXXXXXX, XXXXXXX, KC_MINS,  KC_EQL, XXXXXXX,                    
   ),
 
    [_ADJUST] = LAYOUT_split_3x6_3( \
-  //,-----------------------------------------------------.                    ,-----------------------------------------------------.
-      KC_SLEP,KC__MUTE,KC__VOLDOWN,KC__VOLUP, KC_BRID, KC_BRIU,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,\
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LSFT, XXXXXXX, XXXXXXX, KC_MRWD, KC_MPLY, KC_MFFD,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,\
-  //|--------+--------+--------+--------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
-      KC_LCTL,  KC_INS, KC_PSCR, KC_DEL, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX,   KC_PWR, XXXXXXX,   RESET,\
-  //|--------+--------+--------+--------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
-                                        KC_LALT,   KC_LGUI,  KC_SPC,     KC_ENT,  LOWER,  RAISE \
-                                      //`--------------------------'  `--------------------------'
+  //,---------------------------------------------------------.                    ,-----------------------------------------------------.
+      XXXXXXX, XXXXXXX, XXXXXXX,KC__VOLDOWN,KC__VOLUP,KC__MUTE,                      XXXXXXX, XXXXXXX, XXXXXXX,  KC_INS, KC_PSCR,  KC_DEL,\
+  //|--------+--------+-----------+---------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+      KC_CAPS, XXXXXXX,    XXXXXXX,  KC_MRWD, KC_MPLY, KC_MFFD,                      XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX, XXXXXXX,\
+  //|--------+--------+-----------+---------+--------+--------|                    |--------+--------+--------+--------+--------+--------|
+      KC_LCTL,  KC_INS,    KC_PSCR,   KC_DEL, XXXXXXX, XXXXXXX,                      XXXXXXX, XXXXXXX, XXXXXXX,  KC_PWR, XXXXXXX,   RESET,\
+  //|--------+--------+-----------+---------+--------+--------+--------|  |--------+--------+--------+--------+--------+--------+--------|
+                                              KC_LALT, KC_LGUI,  KC_SPC,     KC_ENT,   LOWER,  RAISE \
+                                          //`--------------------------'  `--------------------------'
   )
 };
 
@@ -148,7 +146,7 @@ void matrix_render_user(struct CharacterMatrix *matrix) {
   if (is_master) {
     // If you want to change the display of OLED, you need to change here
     matrix_write_ln(matrix, read_layer_state());
-    matrix_write_ln(matrix, read_keylog());
+    //matrix_write_ln(matrix, read_keylog());
     //matrix_write_ln(matrix, read_keylogs());
     //matrix_write_ln(matrix, read_mode_icon(keymap_config.swap_lalt_lgui));
     //matrix_write_ln(matrix, read_host_led_state());
